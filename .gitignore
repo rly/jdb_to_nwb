@@ -124,9 +124,11 @@ celerybeat.pid
 .venv
 env/
 venv/
+myenv/
 ENV/
 env.bak/
 venv.bak/
+nwb_venv/
 
 # Spyder project settings
 .spyderproject
@@ -164,4 +166,10 @@ _version.py
 .DS_Store
 .ruff_cache/
 *.nwb
-tests/test_data/*
+
+# Large test data
+tests/test_data/photometry/*
+tests/test_data/raw_ephys/*
+tests/test_data/processed_ephys/*
+tests/test_data/behavior/IM-1478*
+
