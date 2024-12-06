@@ -11,17 +11,23 @@ pip install -e .
 
 ## Current usage
 
-1. Copy `tests/metadata_full.yaml` to the root directory of the repository:
+1. Copy `example/metadata_tims_data.yaml` to the root directory of the repository:
 ```bash
-cp tests/metadata_full.yaml .
+cp example/metadata_tims_data.yaml .
 ```
 
-2. Open `metadata_full.yaml` in a text editor. Update the paths to point to your data and update the metadata for your experiment.
+2. Open `metadata_tims_data.yaml` in a text editor. Update the paths to point to your data and update the metadata for your experiment.
 
 3. Run the conversion to generate an NWB file (replace `out.nwb` with your desired output file name):
 ```bash
-jdb_to_nwb metadata_full.yaml out.nwb
+jdb_to_nwb metadata_tims_data.yaml out.nwb
 ```
+
+NOTE: `tests/metadata_test.yaml` is not yet used.
+
+## Current goals
+
+- Generate an NWB file from Tim's raw ephys data, run MountainSort on the data, and verify the results match the spike sorting results.
 
 ## Versioning
 
@@ -31,5 +37,3 @@ push to the repository. Use [semantic versioning](https://semver.org/) to set th
 Create a GitHub release using the tag.
 
 ## TODO
-
-Rename metadata.yaml to metadata_test.yaml
