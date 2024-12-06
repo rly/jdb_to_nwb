@@ -4,7 +4,7 @@ import numpy as np
 from dateutil import tz
 from pynwb import NWBFile
 
-from jdb_to_nwb.convert_raw_ephys import add_electrode_data, add_raw_ephys, get_raw_ephys_data
+from jdb_to_nwb.convert_raw_ephys import add_electrode_data, add_raw_ephys, get_raw_ephys_data, get_raw_ephys_metadata
 
 
 def test_add_electrode_data():
@@ -35,8 +35,20 @@ def test_add_electrode_data():
     # Create a test filtering list
     filtering_list = ["Bandpass Filter"] * 4
 
+    # Create a test headstage channel numbers list
+    headstage_channel_numbers = [1, 2, 3, 4]
+
+    # Create a test reference daq channel indices list
+    reference_daq_channel_indices = [-1, -1, -1, -1]
+
     # Add electrode data to the NWBFile
-    add_electrode_data(nwbfile=nwbfile, filtering_list=filtering_list, metadata=metadata)
+    add_electrode_data(
+        nwbfile=nwbfile,
+        filtering_list=filtering_list,
+        headstage_channel_numbers=headstage_channel_numbers,
+        reference_daq_channel_indices=reference_daq_channel_indices,
+        metadata=metadata,
+    )
 
     # Test that the nwbfile has the expected device
     assert "Probe" in nwbfile.devices
@@ -74,12 +86,15 @@ def test_add_electrode_data():
         0.0003,
     ]
     assert nwbfile.electrodes.bad_channel.data[:] == [True, False, False, True]
+    assert nwbfile.electrodes.ecog.data[:] == [False, False, True, False]
     assert nwbfile.electrodes.rel_x.data[:] == [0, 1, 2.1, 3]
     assert nwbfile.electrodes.rel_y.data[:] == [0, 0, 0.1, 1]
     assert nwbfile.electrodes.group.data[:] == [eg] * 4
     assert nwbfile.electrodes.group_name.data[:] == ["ElectrodeGroup"] * 4
     assert nwbfile.electrodes.filtering.data[:] == filtering_list
     assert nwbfile.electrodes.location.data[:] == ["Nucleus Accumbens core"] * 4
+    assert nwbfile.electrodes.headstage_channel_number.data[:] == headstage_channel_numbers
+    assert nwbfile.electrodes.reference_daq_channel_index.data[:] == reference_daq_channel_indices
 
 
 def test_get_raw_ephys_data():
@@ -90,11 +105,26 @@ def test_get_raw_ephys_data():
     `python tests/test_data/create_raw_ephys_test_data.py`.
     """
     folder_path = "tests/test_data/raw_ephys/2022-07-25_15-30-00"
-    traces_as_iterator, channel_conversion_factor, original_timestamps, filtering_list = get_raw_ephys_data(folder_path)
+    (
+        traces_as_iterator,
+        channel_conversion_factor,
+        original_timestamps,
+    ) = get_raw_ephys_data(folder_path)
     assert traces_as_iterator.maxshape == (30_000, 4)
     np.testing.assert_allclose(channel_conversion_factor, [0.19499999284744263 * 1e-6] * 4)
-    assert filtering_list == ["2nd-order Butterworth filter with highcut=6000 Hz and lowcut=1 Hz"] * 4
     assert len(original_timestamps) == 30_000
+
+
+def test_get_raw_ephys_metadata():
+    folder_path = "tests/test_data/raw_ephys/2022-07-25_15-30-00"
+    (
+        filtering_list,
+        headstage_channel_numbers,
+        reference_daq_channel_indices,
+    ) = get_raw_ephys_metadata(folder_path)
+    assert filtering_list == ["2nd-order Butterworth filter with highcut=6000 Hz and lowcut=1 Hz"] * 4
+    assert headstage_channel_numbers == [1, 2, 3, 0]
+    assert reference_daq_channel_indices == [-1, -1, -1, -1]
 
 
 def test_add_raw_ephys():
