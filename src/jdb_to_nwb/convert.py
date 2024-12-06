@@ -27,7 +27,7 @@ def create_nwbs(
     add_raw_ephys(nwbfile=nwbfile, metadata=metadata)
     add_spikes(nwbfile=nwbfile, metadata=metadata)
 
-    print(f"Writing file, including iterative read from raw ephys data...")
+    print(f"Reading the raw ephys data in chunks (slow) and writing the NWB file...")
 
     with NWBHDF5IO(output_nwb_file_path, mode="w") as io:
         io.write(nwbfile)
