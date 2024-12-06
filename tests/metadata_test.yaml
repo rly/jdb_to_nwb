@@ -3,6 +3,8 @@ channel_geometry_file_path: "tests/test_data/processed_ephys/geom.csv"
 openephys_folder_path: "tests/test_data/raw_ephys/2022-07-25_15-30-00"
 mountain_sort_output_file_path: "tests/test_data/processed_ephys/firings.mda"
 sampling_frequency: 30000
+ecog_channel_ids:  # 1-indexed
+- 2
 
 # TODO: confirm that all electrodes are in the same group and in the same location
 electrodes_location: "Nucleus Accumbens core"
