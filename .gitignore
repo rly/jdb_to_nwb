@@ -171,3 +171,5 @@ _version.py
 tests/test_data/photometry/*
 tests/test_data/behavior/IM-1478*
 
+# Box credentials
+.env
